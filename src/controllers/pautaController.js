@@ -23,7 +23,7 @@ export class PautaController {
       }
 
       if (err.message === 'PAUTA_EXISTS') {
-        return res.status(409).json({ error: 'Já existe uma pauca com este nome.' });
+        return res.status(409).json({ error: 'Já existe uma pauta com este nome.' });
       }
 
       console.error(err);
