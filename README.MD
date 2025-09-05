@@ -10,6 +10,9 @@
 ## Instalar pacotes
 `npm install`
 
+## Executar migrate
+`npm start`
+
 ## Executar aplicação
 `npm start`
 
