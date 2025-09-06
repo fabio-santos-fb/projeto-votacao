@@ -54,7 +54,7 @@ src/
 ```
 
 ## Libs utilizada
-`dotenv` para utilizar variaveis de ambiente com .env.
+`dotenv` para utilizar variaveis de ambiente com .env .
 `sequelize` ORM para database.
 `jest` utilizado para teste unitários.
-`babel` utilizado os exports das class.
+`babel` utilizado para exports das class.

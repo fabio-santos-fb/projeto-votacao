@@ -1,70 +1,83 @@
 import { UserRepository } from '../../../src/database/repositories/userRepository.js';
-import { pool } from '../../../src/database/db.js';
+import { User } from '../../../src/models/User.js';
 
-jest.mock('../../../src/database/db.js', () => ({
-  pool: {
-    query: jest.fn(),
-  },
-}));
+jest.mock('../../../src/models/User.js'); // Mock do model Sequelize
 
 describe('UserRepository', () => {
   let userRepository;
 
   beforeEach(() => {
     userRepository = new UserRepository();
-    pool.query.mockReset();
+    jest.clearAllMocks();
   });
 
   describe('create', () => {
-    it('should insert a user and return it', async () => {
-      const fakeUser = { id: 'uuid-123', cpf: '52998224725', tipo: 'admin' };
-      pool.query.mockResolvedValue({ rows: [fakeUser] });
+    it('deve criar um novo usuário', async () => {
+      const userMock = { id: '1', cpf: '12345678901', tipo: 'admin' };
+      User.create.mockResolvedValue(userMock);
 
-      const result = await userRepository.create('52998224725', 'admin');
+      const result = await userRepository.create('12345678901', 'admin');
 
-      expect(pool.query).toHaveBeenCalledWith(
-        'INSERT INTO users (cpf, tipo) VALUES ($1, $2) RETURNING *',
-        ['52998224725', 'admin']
-      );
-      expect(result).toEqual(fakeUser);
+      expect(User.create).toHaveBeenCalledWith({ cpf: '12345678901', tipo: 'admin' });
+      expect(result).toEqual(userMock);
     });
   });
 
   describe('findAll', () => {
-    it('should return all users', async () => {
-      const fakeUsers = [
-        { id: 'uuid1', cpf: '52998224725', tipo: 'admin' },
-        { id: 'uuid2', cpf: '12345678909', tipo: 'comum' }
-      ];
-      pool.query.mockResolvedValue({ rows: fakeUsers });
+    it('deve retornar todos os usuários', async () => {
+      const usersMock = [{ id: '1' }, { id: '2' }];
+      User.findAll.mockResolvedValue(usersMock);
 
       const result = await userRepository.findAll();
 
-      expect(pool.query).toHaveBeenCalledWith('SELECT * FROM users');
-      expect(result).toEqual(fakeUsers);
+      expect(User.findAll).toHaveBeenCalled();
+      expect(result).toEqual(usersMock);
     });
   });
 
   describe('findByCpf', () => {
-    it('should return the user matching the CPF', async () => {
-      const fakeUser = { id: 'uuid-123', cpf: '52998224725', tipo: 'admin' };
-      pool.query.mockResolvedValue({ rows: [fakeUser] });
+    it('deve retornar usuário pelo CPF', async () => {
+      const userMock = { id: '1', cpf: '12345678901' };
+      User.findOne.mockResolvedValue(userMock);
 
-      const result = await userRepository.findByCpf('52998224725');
+      const result = await userRepository.findByCpf('12345678901');
 
-      expect(pool.query).toHaveBeenCalledWith(
-        'SELECT * FROM users WHERE cpf = $1',
-        ['52998224725']
-      );
-      expect(result).toEqual(fakeUser);
+      expect(User.findOne).toHaveBeenCalledWith({ where: { cpf: '12345678901' } });
+      expect(result).toEqual(userMock);
     });
 
-    it('should return undefined if no user found', async () => {
-      pool.query.mockResolvedValue({ rows: [] });
+    it('deve retornar null se usuário não encontrado', async () => {
+      User.findOne.mockResolvedValue(null);
 
       const result = await userRepository.findByCpf('00000000000');
 
-      expect(result).toBeUndefined();
+      expect(User.findOne).toHaveBeenCalledWith({ where: { cpf: '00000000000' } });
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('findById', () => {
+    it('deve retornar admin pelo id', async () => {
+      const adminMock = { id: '1', tipo: 'admin' };
+      User.findOne.mockResolvedValue(adminMock);
+
+      const result = await userRepository.findById('1');
+
+      expect(User.findOne).toHaveBeenCalledWith({
+        where: { id: '1', tipo: 'admin' },
+      });
+      expect(result).toEqual(adminMock);
+    });
+
+    it('deve retornar null se admin não encontrado', async () => {
+      User.findOne.mockResolvedValue(null);
+
+      const result = await userRepository.findById('999');
+
+      expect(User.findOne).toHaveBeenCalledWith({
+        where: { id: '999', tipo: 'admin' },
+      });
+      expect(result).toBeNull();
     });
   });
 });
