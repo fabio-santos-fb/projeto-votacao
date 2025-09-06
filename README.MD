@@ -11,13 +11,17 @@
 `npm install`
 
 ## Executar migrate
-`npm start`
+`npm run migrate`
 
 ## Executar aplicação
 `npm start`
 
 ## Executar testes
 `npm test`
+
+## Usuarios cadastrados no sistema
+### Admin: `659.652.350-03`
+### Votante: `536.833.990-90`
 
 ## Arquitetura
 ```

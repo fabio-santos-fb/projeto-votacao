@@ -51,4 +51,23 @@ export class UserController {
     const users = await this.userService.listUsers();
     res.json(users);
   };
+
+  buscarPorCpf = async (req, res) => {
+    try {
+      const { cpf } = req.params;
+
+      const usuario = await this.userService.buscarPorCpf(cpf);
+      return res.json(usuario);
+    } catch (err) {
+      if (err.message === 'INVALID_CPF') {
+        return res.status(400).json({ error: 'CPF inválido' });
+      }
+
+      if (err.message === 'USER_NOT_FOUND') {
+        return res.status(404).json({ error: 'Usuário não encontrada' });
+      }
+
+      return res.status(400).json({ message: err.message });
+    }
+  }
 }

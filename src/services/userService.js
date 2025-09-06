@@ -36,4 +36,18 @@ export class UserService {
   async listUsers() {
     return await this.userRepository.findAll();
   }
+
+  async buscarPorCpf(cpf) {
+    if (!isValidCPF(cpf)) {
+      throw new Error('INVALID_CPF');
+    }
+
+    const user = await this.userRepository.findByCpf(cpf);
+
+    if (!user) {
+      throw new Error('USER_NOT_FOUND');
+    }
+
+    return user
+  }
 }

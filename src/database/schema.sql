@@ -61,3 +61,7 @@ INSERT INTO public.categorias (id, nome) VALUES
 ('0cf9f96e-a8c0-4eef-90c3-7e7f04a5b84a'::uuid, 'Estratégico'),
 ('68c40156-d5bb-4b9e-9cbc-2f8357068ade'::uuid, 'Recursos Humanos'),
 ('6b5a9a29-1de4-4644-9b8b-97a866b25e84'::uuid, 'Projetos & Inovação');
+
+INSERT INTO public.users (id, cpf, tipo) VALUES
+('e78b2890-4c70-4621-919b-606481ba91df'::uuid, '53683399090', 'votante'),
+('7bec9c69-ce0a-405e-a02f-8947acffbd37'::uuid, '65965235003', 'admin');

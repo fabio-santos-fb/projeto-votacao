@@ -114,4 +114,32 @@ router.post('/voters', userController.createUserVoters);
  */
 router.get('/', userController.listUsers);
 
+/**
+ * @swagger
+ * /v1/users/{cpf}:
+ *   get:
+ *     summary: Buscar usuário por CPF
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: cpf
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "52998224725"
+ *         description: CPF do usuário
+ *     responses:
+ *       200:
+ *         description: Usuário encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: CPF inválido
+ *       404:
+ *         description: Usuário não encontrado
+ */
+router.get('/:cpf', userController.buscarPorCpf);
+
 export default router;
