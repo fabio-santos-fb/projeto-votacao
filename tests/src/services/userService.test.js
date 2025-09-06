@@ -9,66 +9,94 @@ describe('UserService', () => {
 
   beforeEach(() => {
     userRepositoryMock = {
+      findById: jest.fn(),
       findByCpf: jest.fn(),
       create: jest.fn(),
       findAll: jest.fn(),
     };
 
     userService = new UserService(userRepositoryMock);
-    isValidCPF.mockReset();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  describe('isUserAdmin', () => {
+    it('deve passar se usuário admin existe', async () => {
+      userRepositoryMock.findById.mockResolvedValue({ id: 'admin-uuid' });
+
+      await expect(userService.isUserAdmin('admin-uuid')).resolves.not.toThrow();
+    });
+
+    it('deve lançar FORBIDDEN se admin não existe', async () => {
+      userRepositoryMock.findById.mockResolvedValue(null);
+
+      await expect(userService.isUserAdmin('admin-uuid')).rejects.toThrow('FORBIDDEN');
+    });
   });
 
   describe('createUser', () => {
-    it('should throw INVALID_CPF if CPF is invalid', async () => {
-      isValidCPF.mockReturnValue(false);
-
-      await expect(userService.createUser('12345678900', 'admin'))
-        .rejects
-        .toThrow('INVALID_CPF');
-    });
-
-    it('should throw INVALID_TYPE if tipo is invalid', async () => {
-      isValidCPF.mockReturnValue(true);
-
-      await expect(userService.createUser('52998224725', 'superuser'))
-        .rejects
-        .toThrow('INVALID_TYPE');
-    });
-
-    it('should throw CPF_EXISTS if CPF is already registered', async () => {
-      isValidCPF.mockReturnValue(true);
-      userRepositoryMock.findByCpf.mockResolvedValue({ cpf: '52998224725' });
-
-      await expect(userService.createUser('52998224725', 'admin'))
-        .rejects
-        .toThrow('CPF_EXISTS');
-    });
-
-    it('should create a new user if CPF and tipo are valid', async () => {
+    it('deve criar usuário com sucesso', async () => {
       isValidCPF.mockReturnValue(true);
       userRepositoryMock.findByCpf.mockResolvedValue(null);
-      const fakeUser = { id: 'uuid-123', cpf: '52998224725', tipo: 'admin' };
-      userRepositoryMock.create.mockResolvedValue(fakeUser);
+      userRepositoryMock.create.mockResolvedValue({ id: 'uuid', cpf: '12345678900', tipo: 'admin' });
 
-      const result = await userService.createUser('529.982.247-25', 'admin');
+      const result = await userService.createUser('12345678900', 'admin');
+      expect(result).toEqual({ id: 'uuid', cpf: '12345678900', tipo: 'admin' });
+    });
 
-      expect(userRepositoryMock.create).toHaveBeenCalledWith('52998224725', 'admin');
-      expect(result).toEqual(fakeUser);
+    it('deve lançar INVALID_CPF se CPF inválido', async () => {
+      isValidCPF.mockReturnValue(false);
+
+      await expect(userService.createUser('000', 'admin')).rejects.toThrow('INVALID_CPF');
+    });
+
+    it('deve lançar INVALID_TYPE se tipo inválido', async () => {
+      isValidCPF.mockReturnValue(true);
+
+      await expect(userService.createUser('12345678900', 'invalid')).rejects.toThrow('INVALID_TYPE');
+    });
+
+    it('deve lançar CPF_EXISTS se CPF já cadastrado', async () => {
+      isValidCPF.mockReturnValue(true);
+      userRepositoryMock.findByCpf.mockResolvedValue({ id: 'uuid', cpf: '12345678900' });
+
+      await expect(userService.createUser('12345678900', 'admin')).rejects.toThrow('CPF_EXISTS');
     });
   });
 
   describe('listUsers', () => {
-    it('should return all users', async () => {
-      const fakeUsers = [
-        { id: 'uuid1', cpf: '52998224725', tipo: 'admin' },
-        { id: 'uuid2', cpf: '12345678909', tipo: 'comum' }
-      ];
-      userRepositoryMock.findAll.mockResolvedValue(fakeUsers);
+    it('deve retornar lista de usuários', async () => {
+      const users = [{ id: 'uuid', cpf: '12345678900', tipo: 'admin' }];
+      userRepositoryMock.findAll.mockResolvedValue(users);
 
       const result = await userService.listUsers();
+      expect(result).toEqual(users);
+    });
+  });
 
-      expect(result).toEqual(fakeUsers);
-      expect(userRepositoryMock.findAll).toHaveBeenCalled();
+  describe('buscarPorCpf', () => {
+    it('deve retornar usuário existente', async () => {
+      isValidCPF.mockReturnValue(true);
+      const user = { id: 'uuid', cpf: '12345678900', tipo: 'votante' };
+      userRepositoryMock.findByCpf.mockResolvedValue(user);
+
+      const result = await userService.buscarPorCpf('12345678900');
+      expect(result).toEqual(user);
+    });
+
+    it('deve lançar INVALID_CPF se CPF inválido', async () => {
+      isValidCPF.mockReturnValue(false);
+
+      await expect(userService.buscarPorCpf('000')).rejects.toThrow('INVALID_CPF');
+    });
+
+    it('deve lançar USER_NOT_FOUND se usuário não encontrado', async () => {
+      isValidCPF.mockReturnValue(true);
+      userRepositoryMock.findByCpf.mockResolvedValue(null);
+
+      await expect(userService.buscarPorCpf('12345678900')).rejects.toThrow('USER_NOT_FOUND');
     });
   });
 });

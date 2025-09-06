@@ -29,9 +29,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-END;
-$$ LANGUAGE plpgsql;
-
 CREATE TRIGGER trigger_update_pautas_updated_at
 BEFORE UPDATE ON pautas
 FOR EACH ROW
@@ -53,7 +50,7 @@ CREATE TABLE IF NOT EXISTS categorias (
     nome TEXT NOT NULL UNIQUE
 );
 
-INSERT INTO public.categorias (id, nome) VALUES
+INSERT INTO categorias (id, nome) VALUES
 ('7907da08-55bc-43e0-b993-b6286a5491b5'::uuid, 'Administrativo'),
 ('2d2397f0-b607-4222-8708-8550b97a4f5c'::uuid, 'Financeiro'),
 ('f972977f-46fb-46de-8706-7b33c71dd063'::uuid, 'Governança'),
@@ -62,6 +59,6 @@ INSERT INTO public.categorias (id, nome) VALUES
 ('68c40156-d5bb-4b9e-9cbc-2f8357068ade'::uuid, 'Recursos Humanos'),
 ('6b5a9a29-1de4-4644-9b8b-97a866b25e84'::uuid, 'Projetos & Inovação');
 
-INSERT INTO public.users (id, cpf, tipo) VALUES
+INSERT INTO users (id, cpf, tipo) VALUES
 ('e78b2890-4c70-4621-919b-606481ba91df'::uuid, '53683399090', 'votante'),
 ('7bec9c69-ce0a-405e-a02f-8947acffbd37'::uuid, '65965235003', 'admin');

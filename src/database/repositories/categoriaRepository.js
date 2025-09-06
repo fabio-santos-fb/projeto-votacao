@@ -1,26 +1,19 @@
-import { pool } from '../db.js';
+import { Categoria } from "../../models/Categoria.js";
 
 export class CategoriaRepository {
   async criar(nome) {
-    const result = await pool.query(
-      'INSERT INTO categorias (nome) VALUES ($1) RETURNING *',
-      [nome]
-    );
-    return result.rows[0];
+    return await Categoria.create({ nome });
   }
 
   async listar() {
-    const result = await pool.query(
-      'SELECT * FROM categorias ORDER BY nome ASC'
-    );
-    return result.rows;
+    return await Categoria.findAll({
+      order: [["nome", "ASC"]],
+    });
   }
 
   async buscarPorNome(nome) {
-    const result = await pool.query(
-      'SELECT * FROM categorias WHERE nome = $1',
-      [nome]
-    );
-    return result.rows[0];
+    return await Categoria.findOne({
+      where: { nome },
+    });
   }
 }

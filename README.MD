@@ -46,4 +46,15 @@ src/
  │   ├─ userRoutes.js
  │   ├─ pautaRoutes.js
  │   └─ votoRoutes.js
+ ├─ models/
+ │   ├─ Categoria.js
+ │   ├─ User.js
+ │   ├─ Pauta.js
+ │   └─ Voto.js
 ```
+
+## Libs utilizada
+`dotenv` para utilizar variaveis de ambiente com .env.
+`sequelize` ORM para database.
+`jest` utilizado para teste unitários.
+`babel` utilizado os exports das class.
