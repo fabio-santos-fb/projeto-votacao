@@ -30,7 +30,7 @@ const userController = new UserController(userService);
 
 /**
  * @swagger
- * /users/admin:
+ * /v1/users/admin:
  *   post:
  *     summary: Cria um usuário adiministrador
  *     tags: [Users]
@@ -62,7 +62,7 @@ router.post('/admin', userController.createUserAdmin);
 
 /**
  * @swagger
- * /users/voters:
+ * /v1/users/voters:
  *   post:
  *     summary: Cria um usuário votante
  *     tags: [Users]
@@ -98,7 +98,7 @@ router.post('/voters', userController.createUserVoters);
 
 /**
  * @swagger
- * /users:
+ * /v1/users:
  *   get:
  *     summary: Lista todos os usuários
  *     tags: [Users]

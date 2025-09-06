@@ -24,17 +24,21 @@
 src/
  ├─ controllers/
  │   ├─ userController.js
+ │   ├─ categoriaController.js
  │   ├─ pautaController.js
  │   └─ votoController.js
  ├─ services/
+ │   ├─ categoriaService.js
  │   ├─ userService.js
  │   ├─ pautaService.js
  │   └─ votoService.js
  ├─ repositories/
+ │   ├─ categoriaRepository.js
  │   ├─ userRepository.js
  │   ├─ pautaRepository.js
  │   └─ votoRepository.js
  ├─ routes/
+ │   ├─ categoriaRoutes.js
  │   ├─ userRoutes.js
  │   ├─ pautaRoutes.js
  │   └─ votoRoutes.js

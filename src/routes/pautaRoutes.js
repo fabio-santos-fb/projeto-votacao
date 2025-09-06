@@ -35,7 +35,7 @@ const pautaController = new PautaController(pautaService, userService);
 
 /**
  * @swagger
- * /pautas:
+ * /v1/pautas:
  *   post:
  *     summary: Cria uma nova pauta
  *     tags: [Pautas]
@@ -47,7 +47,11 @@ const pautaController = new PautaController(pautaService, userService);
  *             type: object
  *             required:
  *               - nome
+ *               - id_admin
  *             properties:
+ *               categoria:
+ *                 type: string
+ *                 example: "Administrativo"
  *               nome:
  *                 type: string
  *                 example: "Pauta 1"
@@ -70,48 +74,58 @@ const pautaController = new PautaController(pautaService, userService);
  */
 router.post('/', pautaController.createPauta);
 
-  /**
-   * @swagger
-   * /pautas:
-   *   get:
-   *     summary: Lista todas as pautas com paginação
-   *     tags: [Pautas]
-   *     parameters:
-   *       - in: query
-   *         name: page
-   *         schema:
-   *           type: integer
-   *         description: Página da paginação
-   *       - in: query
-   *         name: limit
-   *         schema:
-   *           type: integer
-   *         description: Quantidade de itens por página
-   *     responses:
-   *       200:
-   *         description: Lista paginada de pautas
-   */
-  router.get('/', pautaController.listPautas);
+/**
+ * @swagger
+ * /v1/pautas:
+ *   get:
+ *     summary: Lista todas as pautas com paginação
+ *     tags: [Pautas]
+ *     parameters:
+ *       - in: query
+ *         name: categoria
+ *         schema:
+ *           type: string
+ *         description: Governança
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *         description: Status da Pauta (aberta, encerrada, todas)
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Página da paginação
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Quantidade de itens por página
+ *     responses:
+ *       200:
+ *         description: Lista paginada de pautas
+ */
+router.get('/', pautaController.listPautas);
 
-    /**
-   * @swagger
-   * /pautas/{id}:
-   *   get:
-   *     summary: Busca uma pauta pelo ID
-   *     tags: [Pautas]
-   *     parameters:
-   *       - in: path
-   *         name: id
-   *         schema:
-   *           type: string
-   *         required: true
-   *         description: ID da pauta
-   *     responses:
-   *       200:
-   *         description: Detalhes da pauta
-   *       404:
-   *         description: Pauta não encontrada
-   */
-  router.get('/:id', pautaController.getPautaById);
-  
+/**
+ * @swagger
+ * /v1/pautas/{id}:
+ *   get:
+ *     summary: Busca uma pauta pelo ID
+ *     tags: [Pautas]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID da pauta
+ *     responses:
+ *       200:
+ *         description: Detalhes da pauta
+ *       404:
+ *         description: Pauta não encontrada
+ */
+router.get('/:id', pautaController.getPautaById);
+
 export default router;

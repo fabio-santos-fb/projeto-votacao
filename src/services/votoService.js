@@ -75,8 +75,11 @@ export class VotoService {
       data_fim,
       status_sessao,
       resultado,
-      porcentagem_sim: `${percSim}%`,
-      porcentagem_nao: `${percNao}%`
+      porcentagem_sim: percSim,
+      porcentagem_nao: percNao,
+      total_sim: totalSim,
+      total_nao: totalNao,
+      total: total
     };
   }
 }

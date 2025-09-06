@@ -5,7 +5,7 @@ export class PautaController {
   }
 
   createPauta = async (req, res) => {
-    const { nome, descricao, tempo_aberta, id_admin } = req.body;
+    const { nome, descricao, tempo_aberta, id_admin, categoria } = req.body;
     try {
       await this.userService.isUserAdmin(id_admin);
 
@@ -14,7 +14,7 @@ export class PautaController {
       if (tempoAberta == null)
         tempoAberta = 1
 
-      const pauta = await this.pautaService.createPauta(nome, descricao, tempoAberta);
+      const pauta = await this.pautaService.createPauta(nome, descricao, tempoAberta, categoria);
       
       res.status(201).json(pauta);
     } catch (err) {
@@ -35,8 +35,10 @@ export class PautaController {
     try {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
+      const status = req.query.status || null;
+      const categoria = req.query.categoria;
 
-      const result = await this.pautaService.listPautas(page, limit);
+      const result = await this.pautaService.listPautas(page, limit, status, categoria);
       res.json(result);
     } catch (err) {
       console.error(err);

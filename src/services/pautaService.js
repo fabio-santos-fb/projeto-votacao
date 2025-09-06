@@ -3,25 +3,25 @@ export class PautaService {
     this.pautaRepository = pautaRepository;
   }
 
-  async createPauta(nome, descricao, tempoAberta = 1) {
+  async createPauta(nome, descricao, tempoAberta, categoria) {
     const exists = await this.pautaRepository.findByNome(nome);
     
     if (exists) {
       throw new Error('PAUTA_EXISTS');
     }
 
-    return await this.pautaRepository.create(nome, descricao, tempoAberta);
+    return await this.pautaRepository.create(nome, descricao, tempoAberta, categoria);
   }
 
-  async listPautas(page, limit) {
-    const { pautas, total } = await this.pautaRepository.findAllPaginated(page, limit);
+  async listPautas(page, limit, status, categoria) {
+    const { pautas, total } = await this.pautaRepository.findAllPaginated(page, limit, categoria);
 
     const now = new Date();
 
-    const pautasFormatadas = pautas.map(pauta => {
+    let pautasFormatadas = pautas.map(pauta => {
       const dataInicio = new Date(pauta.created_at);
       const dataFim = new Date(dataInicio.getTime() + pauta.tempo_aberta * 60000);
-      const status = now <= dataFim ? 'aberta' : 'encerrada';
+      const statusCalculado = now <= dataFim ? 'ABERTA' : 'ENCERRADA';
 
       const tempoRestanteMs = Math.max(dataFim - now, 0);
       const tempoRestanteMin = Math.floor(tempoRestanteMs / 60000);
@@ -30,16 +30,23 @@ export class PautaService {
         id: pauta.id,
         nome: pauta.nome,
         descricao: pauta.descricao,
-        status,
-        tempo_restante: status === 'aberta' ? `${tempoRestanteMin} min` : '0 min',
+        categoria: pauta.categoria,
+        status: statusCalculado,
+        tempo_restante: statusCalculado === 'ABERTA' ? tempoRestanteMin : 0,
       };
     });
+
+    // Aplica o filtro de status, se informado
+    if (status) {
+      const statusUpper = status.toUpperCase();
+      pautasFormatadas = pautasFormatadas.filter(p => p.status === statusUpper);
+    }
 
     return {
       page,
       limit,
-      total,
-      total_pages: Math.ceil(total / limit),
+      total: status ? pautasFormatadas.length : total,
+      total_pages: Math.ceil((status ? pautasFormatadas.length : total) / limit),
       pautas: pautasFormatadas,
     };
   }
@@ -56,7 +63,7 @@ export class PautaService {
   formatPauta(pauta, now) {
     const dataInicio = new Date(pauta.created_at);
     const dataFim = new Date(dataInicio.getTime() + pauta.tempo_aberta * 60000);
-    const status = now <= dataFim ? 'aberta' : 'encerrada';
+    const status = now <= dataFim ? 'ABERTA' : 'ENCERRADA';
 
     const tempoRestanteMs = Math.max(dataFim - now, 0);
     const tempoRestanteMin = Math.floor(tempoRestanteMs / 60000);
@@ -64,9 +71,10 @@ export class PautaService {
     return {
       id: pauta.id,
       nome: pauta.nome,
+      categoria: pauta.categoria,
       descricao: pauta.descricao,
       status,
-      tempo_restante: status === 'aberta' ? `${tempoRestanteMin} min` : '0 min',
+      tempo_restante: status === 'ABERTA' ? tempoRestanteMin : 0,
     };
   }
 }

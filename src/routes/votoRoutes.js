@@ -16,7 +16,7 @@ const votoController = new VotoController(votoService);
 
 /**
  * @swagger
- * /votos:
+ * /v1/votos:
  *   post:
  *     summary: Registrar um voto em uma pauta
  *     tags: [Votos]
@@ -54,7 +54,7 @@ router.post('/', votoController.votar);
 
 /**
  * @swagger
- * /votos/resultado/{idPauta}:
+ * /v1/votos/resultado/{idPauta}:
  *   get:
  *     summary: Retorna o resultado da votação de uma pauta
  *     tags: [Votos]
@@ -93,9 +93,15 @@ router.post('/', votoController.votar);
  *                   type: string
  *                   enum: [aprovado, reprovado, parcial]
  *                 porcentagem_sim:
- *                   type: string
+ *                   type: integer
  *                 porcentagem_nao:
- *                   type: string
+ *                   type: integer
+ *                 total_sim:
+ *                   type: integer
+ *                 total_nao:
+ *                   type: integer
+ *                 total:
+ *                   type: integer
  *       404:
  *         description: Pauta não encontrada
  */
