@@ -6,6 +6,7 @@ export class CategoriaController {
   criarCategoria = async (req, res) => {
     const { nome } = req.body;
     try {
+      console.info("Criando categoria.")
       const categoria = await this.categoriaService.criarCategoria(nome);
       res.status(201).json(categoria);
     } catch (err) {
@@ -19,6 +20,7 @@ export class CategoriaController {
 
   listarCategorias = async (req, res) => {
     try {
+      console.info("Iniciando Listagem de categoria.")
       const categorias = await this.categoriaService.listarCategorias();
       res.json(categorias);
     } catch (err) {
