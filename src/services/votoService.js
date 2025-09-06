@@ -62,7 +62,8 @@ export class VotoService {
     // resultado
     let resultado = 'parcial';
     if (status_sessao === 'encerrada') {
-      if (percSim > 50) resultado = 'aprovado';
+      if (percSim == 0) resultado = 'anulada';
+      else if (percSim > 50) resultado = 'aprovado';
       else if (percSim < 50) resultado = 'reprovado';
       else resultado = 'parcial';
     }
